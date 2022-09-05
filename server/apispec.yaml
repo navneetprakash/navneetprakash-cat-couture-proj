@@ -1,0 +1,152 @@
+openapi: 3.0.2
+x-stoplight:
+  id: 4iwri26hl1ske
+info:
+  version: "1.0"
+  title: Welcome to the Cat Couture Products API!
+  license:
+    name: Navneet
+    url: navprak@gmail.com
+  description: This API allows user to handle cat products
+  contact:
+    name: Navneet Prakash
+    email: navneetprakash@developersinstitute.co.nz
+    url: "null"
+servers:
+  - url: "http://localhost:5001/api"
+    description: Development server
+  - url: "https://catproj.herokuapp.com/api"
+    description: Production server
+paths:
+  /products:
+    get:
+      summary: Returns a list of products
+      description: Get a list of products
+      operationId: get-products
+      tags:
+        - products
+      parameters:
+        - schema:
+            type: number
+            minimum: 1
+            default: 1
+          in: query
+          name: page
+          description: Goes to the page number and display's that page products
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  products:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Product"
+                  page:
+                    type: integer
+                  pageCount:
+                    type: integer
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /reports:
+    get:
+      summary: Returns a list of reports
+      description: Get a list of reports
+      operationId: get-reports
+      security:
+        - bearerAuth: [read:reports]
+      tags:
+        - reports
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  categoryName:
+                    type: string
+                  totalProducts:
+                    type: number
+                  discountedProducts:
+                    type: number
+        "401":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Unauthorized"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: string
+        categoryName:
+          type: string
+          nullable: true
+        imageName:
+          type: string
+          nullable: true
+        imageDescription:
+          type: string
+          nullable: true
+        discountValue:
+          type: number
+          nullable: true
+        discountType:
+          type: string
+          nullable: true
+          enum:
+            - percentage off
+            - fixed amount off
+      required:
+        - id
+        - name
+        - description
+        - price
+        - categoryName
+        - imageName
+        - imageDescription
+        - discountValue
+        - discountType
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+tags:
+  - name: products
+    description: List of products
+  - name: reports
+    description: Get report from dashboard
