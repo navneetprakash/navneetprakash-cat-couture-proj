@@ -25,3 +25,7 @@ docker-compose up --build
 ```
 
 ---
+
+## Screenshot
+
+![img](./cat-couture.png)
